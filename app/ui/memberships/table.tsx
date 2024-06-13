@@ -1,12 +1,12 @@
-import Image from "next/image";
-import { lusitana } from "@/app/ui/fonts";
-import Search from "@/app/ui/search";
-import { CustomersTable, FormattedCustomersTable } from "@/app/lib/definitions";
-import { fetchFilteredCustomers } from "@/app/lib/data";
+import Image from 'next/image';
+import { lusitana } from '@/app/ui/fonts';
+import Search from '@/app/ui/search';
+import { CustomersTable, FormattedCustomersTable } from '@/app/lib/definitions';
+import { fetchFilteredCustomers } from '@/app/lib/data';
 
-export default async function CustomersTable({
+export default async function MembershipsTable({
   query,
-  currentPage,
+  currentPage
 }: {
   query: string;
   currentPage: number;
@@ -45,11 +45,6 @@ export default async function CustomersTable({
                       </div>
                     </div>
                     <div className="flex w-full items-center justify-between border-b py-5">
-                      <div className="pt-4 text-sm">
-                        <p>{customer.total_memberships} memberships</p>
-                      </div>
-                    </div>
-                    <div className="flex w-full items-center justify-between border-b py-5">
                       <div className="flex w-1/2 flex-col">
                         <p className="text-xs">Pending</p>
                         <p className="font-medium">{customer.total_pending}</p>
@@ -73,9 +68,6 @@ export default async function CustomersTable({
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
                       Email
-                    </th>
-                    <th scope="col" className="px-4 py-5 font-medium">
-                      Total Memberships
                     </th>
                     <th scope="col" className="px-3 py-5 font-medium">
                       Total Invoices
@@ -106,9 +98,6 @@ export default async function CustomersTable({
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {customer.email}
-                      </td>
-                      <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                        {customer.total_memberships}
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
                         {customer.total_invoices}

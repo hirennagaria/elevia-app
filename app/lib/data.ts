@@ -7,6 +7,7 @@ import {
   LatestInvoiceRaw,
   User,
   Revenue,
+  MembershipsTable,
 } from "./definitions";
 import { formatCurrency } from "./utils";
 import { unstable_noStore as noStore } from "next/cache";
@@ -207,9 +208,11 @@ export async function fetchFilteredCustomers(query: string, currentPage: number)
 		  customers.image_url,
 		  COUNT(invoices.id) AS total_invoices,
 		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
+		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid,
+      COUNT(membership.id) AS total_memberships
 		FROM customers
-		LEFT JOIN invoices ON customers.id = invoices.customer_id
+    LEFT JOIN membership ON customers.id = membership.customer_id
+    LEFT JOIN invoices ON membership.invoice_id = invoices.id
 		WHERE
 		  customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`}
@@ -257,5 +260,28 @@ export async function getUser(email: string) {
   } catch (error) {
     console.error("Failed to fetch user:", error);
     throw new Error("Failed to fetch user.");
+  }
+}
+
+export async function fetchFilteredMemberships(query: string, currentPage: number) {
+  noStore();
+  try {
+    const data = await sql<LatestInvoiceRaw>`
+      SELECT invoices.amount, customers.name, customers.image_url, customers.email, 
+      memberships.id, memberships.days, memberships.status, memberships.start_date, memberships.type,
+      FROM memberships
+      JOIN customers ON memberships.customer_id = customers.id
+      JOIN invoices ON memberships.invoice_id = invoices.id
+      ORDER BY memberships.start_date DESC
+      LIMIT 5`;
+
+    const latestInvoices = data.rows.map((invoice) => ({
+      ...invoice,
+      amount: formatCurrency(invoice.amount),
+    }));
+    return latestInvoices;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch the latest invoices.");
   }
 }

@@ -4,6 +4,7 @@ const {
   customers,
   revenue,
   users,
+  memberships,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -16,7 +17,8 @@ async function seedUsers(client) {
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        user_role VARCHAR(255) NOT NULL
       );
     `;
 
@@ -160,6 +162,48 @@ async function seedRevenue(client) {
   }
 }
 
+/* async function seedMemberships(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "customers" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS membership (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        customer_id UUID NOT NULL,
+        days INT NOT NULL,
+        status VARCHAR(255) NOT NULL,
+        start_date DATE NOT NULL,
+        type VARCHAR(255) NOT NULL,
+        invoice_id UUID NOT NULL
+    );
+    `;
+
+    console.log(`Created "membership" table`);
+
+    // Insert data into the "customers" table
+    const insertedMemberships = await Promise.all(
+      memberships.map(
+        (membership) => client.sql`
+        INSERT INTO membership (customer_id, days, status, start_date, type, invoice_id)
+        VALUES (${membership.customer_id}, ${membership.days}, ${membership.status}, ${membership.start_date}, ${membership.type}, ${membership.invoice_id})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedMemberships.length} memberships`);
+
+    return {
+      createTable,
+      memberships: insertedMemberships,
+    };
+  } catch (error) {
+    console.error('Error seeding memberships:', error);
+    throw error;
+  }
+} */
+
 async function main() {
   const client = await db.connect();
 
@@ -167,6 +211,7 @@ async function main() {
   await seedCustomers(client);
   await seedInvoices(client);
   await seedRevenue(client);
+  await seedMemberships(client);
 
   await client.end();
 }

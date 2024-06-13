@@ -1,12 +1,12 @@
 import { fetchCustomers, fetchCustomersPages } from "@/app/lib/data";
-import CustomersTable from "@/app/ui/customers/table";
+import MembershipsTable from "@/app/ui/memberships/table";
 import { lusitana } from "@/app/ui/fonts";
 import Pagination from "@/app/ui/invoices/pagination";
 import Search from "@/app/ui/search";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Customers",
+  title: "Memberships",
 };
 
 export default async function Page({
@@ -29,9 +29,8 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search customers..." />
-        <button className="rounded-md bg-blue-500 px-4 py-2 text-white">Add Membership</button>
       </div>
-      <CustomersTable query={query} currentPage={currentPage} />
+      <MembershipsTable query={query} currentPage={currentPage} />
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>

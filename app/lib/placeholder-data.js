@@ -6,6 +6,7 @@ const users = [
     name: 'User',
     email: 'user@nextmail.com',
     password: '123456',
+    user_role: 'admin',
   },
 ];
 
@@ -180,9 +181,37 @@ const revenue = [
   { month: 'Dec', revenue: 4800 },
 ];
 
+const memberships = [
+  {
+    customer_id: customers[0].id,
+    days: 999,
+    status: 'pending',
+    start_date: '2023-12-06',
+    type: 'PT',
+    invoice_id: invoices[0].id,
+  },
+  {
+    customer_id: customers[1].id,
+    days: 20348,
+    status: 'pending',
+    start_date: '2023-11-14',
+    type: 'PT',
+    invoice_id: invoices[1].id,
+  },
+  {
+    customer_id: customers[4].id,
+    days: 3040,
+    status: 'paid',
+    start_date: '2023-10-29',
+    type: 'DP',
+    invoice_id: invoices[2].id,
+  },
+]
+
 module.exports = {
   users,
   customers,
   invoices,
   revenue,
+  memberships,
 };

@@ -60,6 +60,7 @@ export type CustomersTable = {
   name: string;
   email: string;
   image_url: string;
+  total_memberships: number;
   total_invoices: number;
   total_pending: number;
   total_paid: number;
